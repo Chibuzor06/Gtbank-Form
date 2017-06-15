@@ -5,8 +5,8 @@ import java.util.Properties;
 
 public class JDBC {
 	private String URL = "jdbc:mysql://localhost/gregs_list"; 
-	private String USER = "fill-in-user-here";
-	private String PASSWORD = "fill-in-password-here";
+	private String USER = "username-here";
+	private String PASSWORD = "password-here";
 	
 	Connection getConnection(){
 		Connection con = null;
