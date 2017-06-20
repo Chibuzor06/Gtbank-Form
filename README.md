@@ -1,6 +1,8 @@
 # Gtbank-Form
 Account Opening form, practcing working with mysql
 
+# Work4.java is the current working form
+
 code to create the database table
 //old code
 CREATE TABLE work_database(Date DATE, Company_Name BLOB, Office_Telephone VARCHAR(15),
