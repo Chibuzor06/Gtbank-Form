@@ -652,7 +652,7 @@ public class Work4 extends JFrame {
 					 
 					 String data[] = date.split("-");
 					 if(data.length != 3){
-						 	System.out.println("Error in date formatting, I think");
+						 	//System.out.println("Error in date formatting, I think");
 					 }else{
 						textFieldYear.setText(data[0]);
 					 	textFieldMonth.setText(data[1]);
@@ -777,19 +777,27 @@ public class Work4 extends JFrame {
 		
 	}
 	private void uploadData(){
-		int year, month, day;
-		year = Integer.parseInt(textFieldYear.getText());		
-		month = Integer.parseInt(textFieldMonth.getText());
-		day = Integer.parseInt(textFieldDay.getText());
+		String date;
+		if(textFieldDay.getText().equals("") || textFieldMonth.getText().equals("") || textFieldDay.getText().equals("")){
+			date = null;
+		}
+		else{
+			int year, month, day;
+			year = Integer.parseInt(textFieldYear.getText());		
+			month = Integer.parseInt(textFieldMonth.getText());
+			day = Integer.parseInt(textFieldDay.getText());
+			date = "'" + year + "-" + month + "-" + day + "'";
+		}
 		
-		String companyName, webAddress, officeTelephone, date;
+		
+		String companyName, webAddress, officeTelephone;
 		companyName = textFieldCompanyName.getText();
 		
 		webAddress = textFieldWebAddress.getText();
 		
 		officeTelephone = textFieldOfficeTelephone.getText();
 		
-		date = year + "-" + month + "-" + day;
+		
 		System.out.println(companyName + " " + webAddress + " " + " " + 
 		 officeTelephone + " " + date);
 		
@@ -848,8 +856,8 @@ public class Work4 extends JFrame {
 		clearFields();     // clears all fields
 		if(update){
 			update = false;
-			sql = "UPDATE work_database SET Date = '" + date;
-			sql += "',company_Name = '" + companyName + "', Office_Telephone = '" + officeTelephone;
+			sql = "UPDATE work_database SET Date = " + date;
+			sql += ",company_Name = '" + companyName + "', Office_Telephone = '" + officeTelephone;
 			sql += "',Web_Address = '" + webAddress + "', Account_Number = '" + accountNumber;
 			sql += "',RMT_email = '" + RMTemail + "', All_Accounts = '" + allAccounts;
 			sql += "',Select_Account = '" + selectAccount + "', Cheque_Confirmation = '" + chequeConfirmation;
@@ -868,7 +876,7 @@ public class Work4 extends JFrame {
 				+ " NIBBS_Instant_Payment, Standing_Instructions, Custom_Duty,"
 				+ " Name1, Signature_Date1, Name2, Signature_Date2,"
 				+ " Signature_Verification, New, Existing, Treated_by1,"
-				+ " Treated_by2) VALUES('" + date + syntax + companyName 
+				+ " Treated_by2) VALUES(" + date + " ,'" + companyName 
 				+ syntax + officeTelephone + syntax + webAddress + syntax + accountNumber
 				+ syntax + RMTemail + syntax + allAccounts + syntax + selectAccount + syntax +
 				chequeConfirmation + syntax + nibbsInstantPayment + syntax + standingInstructions +
