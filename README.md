@@ -21,3 +21,8 @@ NIBBS_Instant_Payment CHAR(1), Standing_Instructions CHAR(1), Custom_Duty CHAR(1
 Name1 VARCHAR(40), Signature_Date1 VARCHAR(30), Name2 VARCHAR(40), 
 Signature_Date2 VARCHAR(30), Signature_Verification VARCHAR(20), New CHAR(1),
 Existing CHAR(1), Treated_by1 VARCHAR(40), Treated_by2 VARCHAR(40)); 
+
+//Alter the table to include Primary key
+ALTER TABLE work_database
+ADD COLUMN ID INT NOT NULL AUTO_INCREMENT FIRST,
+ADD PRIMARY KEY (ID);
