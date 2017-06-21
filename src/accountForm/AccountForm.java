@@ -1,4 +1,4 @@
-package work2;
+package accountForm;
 
 import java.awt.BorderLayout;
 import java.sql.*;
@@ -27,7 +27,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class Work4 extends JFrame {
+public class AccountForm extends JFrame {
 
 	private JPanel contentPane, panel;
 	private JCheckBox chckbxAllAccounts;
@@ -76,7 +76,7 @@ public class Work4 extends JFrame {
 			        System.out.println(ex.getMessage());
 			    }
 				try {
-					Work4 frame = new Work4();
+					AccountForm frame = new AccountForm();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -88,7 +88,7 @@ public class Work4 extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Work4() {
+	public AccountForm() {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
