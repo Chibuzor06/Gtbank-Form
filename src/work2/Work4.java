@@ -29,7 +29,7 @@ import java.awt.event.WindowEvent;
 
 public class Work4 extends JFrame {
 
-	private JPanel contentPane;
+	private JPanel contentPane, panel;
 	private JCheckBox chckbxAllAccounts;
 	private JCheckBox chckbxSelectAccount;
 	private JCheckBox chckbxChequeConfirmation;
@@ -109,7 +109,7 @@ public class Work4 extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		panel.setBorder(null);
 		panel.setBackground(Color.WHITE);
 		JScrollPane scrollPane = new JScrollPane(panel);
@@ -778,11 +778,18 @@ public class Work4 extends JFrame {
 	}
 	private void uploadData(){
 		String date;
-		if(textFieldDay.getText().equals("") || textFieldMonth.getText().equals("") || textFieldDay.getText().equals("")){
-			date = null;
+		if (!(textFieldDay.getText().matches("[0-9]+")) || !(textFieldMonth.getText().matches("[0-9]+")) || !(textFieldYear.getText().matches("[0-9]+"))){
+			JOptionPane.showMessageDialog(panel, "Please input only numeric values in date fields", "Error", JOptionPane.ERROR_MESSAGE );
+			textFieldDay.setText("");
+			textFieldMonth.setText("");
+			textFieldYear.setText("");
+			return;
 		}
-		else{
+		if(textFieldDay.getText().equals("") || textFieldMonth.getText().equals("") || textFieldYear.getText().equals("")){
+			date = null;
+		}else{
 			int year, month, day;
+			
 			year = Integer.parseInt(textFieldYear.getText());		
 			month = Integer.parseInt(textFieldMonth.getText());
 			day = Integer.parseInt(textFieldDay.getText());
@@ -855,7 +862,7 @@ public class Work4 extends JFrame {
 		
 		clearFields();     // clears all fields
 		if(update){
-			update = false;
+			//update = false;
 			sql = "UPDATE work_database SET Date = " + date;
 			sql += ",company_Name = '" + companyName + "', Office_Telephone = '" + officeTelephone;
 			sql += "',Web_Address = '" + webAddress + "', Account_Number = '" + accountNumber;
@@ -885,6 +892,14 @@ public class Work4 extends JFrame {
 				syntax + treatedBy2 + "');";
 		}
 		executeQuery(sql);
+		String message;
+		if(update){
+			update = false;
+			message = "Database Updated";
+		}else{
+			message = "New Data Added to Database.";
+		}
+		JOptionPane.showMessageDialog(panel, message);
 		
 	}
 }
