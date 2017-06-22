@@ -6,7 +6,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class MyTableModel extends AbstractTableModel{
 
-	ResultSet result;
+	public ResultSet result;
 	ResultSetMetaData metadata; 
 	int numberOfRows;
 	boolean connectedToDatabase = false;

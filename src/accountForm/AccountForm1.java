@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class AccountForm1 extends JFrame {
 
@@ -60,7 +61,7 @@ public class AccountForm1 extends JFrame {
 	private JTextField textFieldName1;
 	private JTextField textFieldName2;
 	private JButton btnOpenFile;
-	private JTextField textFieldSignature;
+	private JTextField textFieldSignature1;
 	private JTextField textFieldSignature2;
 	private JTextField textFieldSignatureVerification;
 	private JTextField textFieldTreatedBy1;
@@ -217,7 +218,7 @@ public class AccountForm1 extends JFrame {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					textFieldSignature.setText(signatureFile1.getPath());
+					textFieldSignature1.setText(signatureFile1.getPath());
 				}
 				
 			}
@@ -268,10 +269,10 @@ public class AccountForm1 extends JFrame {
 			}
 		});
 		
-		textFieldSignature = new JTextField();
-		textFieldSignature.setColumns(10);
-		textFieldSignature.setBackground(Color.WHITE);
-		textFieldSignature.setEditable(false);
+		textFieldSignature1 = new JTextField();
+		textFieldSignature1.setColumns(10);
+		textFieldSignature1.setBackground(Color.WHITE);
+		textFieldSignature1.setEditable(false);
 		
 		textFieldSignature2 = new JTextField();
 		textFieldSignature2.setColumns(10);
@@ -437,7 +438,7 @@ public class AccountForm1 extends JFrame {
 												.addComponent(btnOpenFile)
 												.addPreferredGap(ComponentPlacement.RELATED)
 												.addGroup(layout.createParallelGroup(Alignment.LEADING)
-														.addComponent(textFieldSignature)
+														.addComponent(textFieldSignature1)
 														.addComponent(btnViewImage1))
 												//.addComponent(textFieldSignature)
 												/*.addComponent(lblSDate1)
@@ -552,7 +553,7 @@ public class AccountForm1 extends JFrame {
 						.addComponent(textFieldName1)
 						.addComponent(lblSignature)
 						.addComponent(btnOpenFile)
-						.addComponent(textFieldSignature)										
+						.addComponent(textFieldSignature1)										
 						)
 				//.addPreferredGap(ComponentPlacement.RELATED)
 				.addComponent(btnViewImage1)
@@ -777,7 +778,8 @@ public class AccountForm1 extends JFrame {
 	}
 	private void loadRecords() throws Exception{
 		String sql = "SELECT * FROM work_database;";
-		table.setModel(new MyTableModel(sql));
+		MyTableModel tableModel = new MyTableModel(sql);
+		table.setModel(tableModel);
 		
 		
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -785,7 +787,7 @@ public class AccountForm1 extends JFrame {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				// TODO Auto-generated method stub
-				
+				clearFields();
 				if(table.getSelectedRow() >= 0){
 					ArrayList<Object> list = new ArrayList<Object>();
 					for(int i = 0; i < 22; i++){
@@ -833,15 +835,42 @@ public class AccountForm1 extends JFrame {
 					 if(list.get(13) != null){
 						 textFieldName1.setText(list.get(13).toString());
 					 }
-					/* if(list.get(14) != null){
-						 textFieldSignatureDate1.setText(list.get(14).toString());
-					 }*/
+					 if(list.get(14) != null){
+						// textFieldSignatureDate1.setText(list.get(14).toString());
+						 textFieldSignature1.setText("Click below to view");
+						try {
+							Blob imageBlob =  tableModel.result.getBlob(14);
+							InputStream inputStream = imageBlob.getBinaryStream(1, imageBlob.length());
+							imageSignature1 = ImageIO.read(inputStream);
+							System.out.println("Got to this point");
+							if(imageSignature1 == null){
+								System.out.println("It's null");
+							}
+							
+						} catch (SQLException | IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+					 }
 					 if(list.get(15) != null){
 						 textFieldName2.setText(list.get(15).toString());
 					 }
-					/* if(list.get(16) != null){
-						 textFieldSignatureDate2.setText(list.get(16).toString());
-					 }*/
+					 if(list.get(16) != null){
+						 //textFieldSignature2.setText(list.get(16).toString());
+						 textFieldSignature2.setText("Click below to view");
+						 
+						 try {
+								Blob imageBlob =  tableModel.result.getBlob(16);
+								InputStream inputStream = imageBlob.getBinaryStream(1, imageBlob.length());
+								imageSignature2 = ImageIO.read(inputStream);
+								
+							} catch (SQLException | IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						
+					 }
 					 if(list.get(20) != null){
 						 textFieldTreatedBy1.setText(list.get(20).toString());
 					 }
@@ -913,9 +942,9 @@ public class AccountForm1 extends JFrame {
 		textFieldAccountNumber.setText("");
 		textFieldRMTemailAddress.setText("");
 		textFieldName1.setText("");	
-	//	textFieldSignatureDate1.setText("");
+		textFieldSignature1.setText("");
 		textFieldName2.setText("");
-	//	textFieldSignatureDate2.setText("");
+		textFieldSignature2.setText("");
 		textFieldTreatedBy1.setText("");
 		textFieldTreatedBy2.setText("");
 		textFieldSignatureVerification.setText("");
