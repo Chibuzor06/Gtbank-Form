@@ -32,9 +32,11 @@ import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -74,6 +76,7 @@ public class AccountForm1 extends JFrame {
 	JFileChooser fc;
 	protected boolean update = false;
 	private int updateID = -1;
+	private final double FILESIZE = 64;
 	
 	BufferedImage imageSignature1, imageSignature2;
 	
@@ -211,6 +214,11 @@ public class AccountForm1 extends JFrame {
 				int value = fc.showOpenDialog(panel);
 				if(value == JFileChooser.APPROVE_OPTION){
 					signatureFile1 = fc.getSelectedFile();
+					if ((signatureFile1.length()/1024) > FILESIZE){
+						JOptionPane.showMessageDialog(panel, "Please select an image less than 64kb",
+								"Image File too large", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
 					try {
 						imageSignature1 = ImageIO.read(signatureFile1);
 						
@@ -231,6 +239,11 @@ public class AccountForm1 extends JFrame {
 				int returnValue = fc.showOpenDialog(panel);
 				if(returnValue == JFileChooser.APPROVE_OPTION){
 					signatureFile2 = fc.getSelectedFile();
+					if ((signatureFile2.length()/1024) > FILESIZE){
+						JOptionPane.showMessageDialog(panel, "Please select an image less than 64kb",
+								"Image File too large", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
 					try {
 						imageSignature2 = ImageIO.read(signatureFile2);
 					} catch (IOException e1) {
@@ -741,17 +754,19 @@ public class AccountForm1 extends JFrame {
 
 	private void executeQuery(String s){
 		PreparedStatement prep = null;
+		FileInputStream fis1 = null, fis2 = null;
 		try {
 			prep = connect.getConnection().prepareStatement(s);
 			if(!(signatureFile1 == null)){
-				FileInputStream fis1 = new FileInputStream(signatureFile1);
+				fis1 = new FileInputStream(signatureFile1);
 				prep.setBinaryStream(1, fis1, (int)signatureFile1.length());
+				System.out.println("This happened");
 			}else{
 				prep.setNull(1, Types.BLOB);
 			}
 			
 			if(!(signatureFile2 == null)){
-				FileInputStream fis2 = new FileInputStream(signatureFile2);				
+				fis2 = new FileInputStream(signatureFile2);				
 				prep.setBinaryStream(2, fis2, (int)signatureFile2.length());
 			}else{
 				prep.setNull(2, Types.BLOB);
@@ -766,6 +781,22 @@ public class AccountForm1 extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
+			if(fis1 != null){
+				try {
+					fis1.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(fis2 != null){
+				try {
+					fis2.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			if(prep != null){
 				try{
 					prep.close();
@@ -795,6 +826,7 @@ public class AccountForm1 extends JFrame {
 						list.add(obj);
 					}
 					
+					int	ID = Integer.parseInt(list.get(0).toString());
 					 String date = "";
 					 if(list.get(1) == null){
 						 //date = "";
@@ -836,15 +868,39 @@ public class AccountForm1 extends JFrame {
 						 textFieldName1.setText(list.get(13).toString());
 					 }
 					 if(list.get(14) != null){
-						// textFieldSignatureDate1.setText(list.get(14).toString());
 						 textFieldSignature1.setText("Click below to view");
 						try {
-							Blob imageBlob =  tableModel.result.getBlob(14);
-							InputStream inputStream = imageBlob.getBinaryStream(1, imageBlob.length());
-							imageSignature1 = ImageIO.read(inputStream);
-							System.out.println("Got to this point");
+							Blob imageBlob =  null;	
+							
+							String source = "data//image" + ID +".jpg";
+							File image = new File(source);
+							
+							if(image.exists()){
+								imageSignature1 = ImageIO.read(image);
+							}else{
+								String sql = "SELECT Signature1 FROM work_database WHERE ID=" + ID
+										+ ";";
+							Utilities query = new Utilities();
+							ResultSet result = null;
+							result = query.ExecuteSQLStatement(sql);
+							while(result.next()){
+								imageBlob = result.getBlob("Signature1");
+							}
+							/*if(imageBlob == null){
+								System.out.println("Blob is null");
+							}
+							*/
+							byte b[] = imageBlob.getBytes(1, (int)imageBlob.length());
+							
+							imageSignature1 = ImageIO.read(new ByteArrayInputStream(b));
+							
+				            FileOutputStream fos=new FileOutputStream(new File(source));
+				            fos.write(b);
+				            fos.close();
+							}
+							
 							if(imageSignature1 == null){
-								System.out.println("It's null");
+								System.out.println("Signature1 is null");
 							}
 							
 						} catch (SQLException | IOException e1) {
@@ -859,16 +915,44 @@ public class AccountForm1 extends JFrame {
 					 if(list.get(16) != null){
 						 //textFieldSignature2.setText(list.get(16).toString());
 						 textFieldSignature2.setText("Click below to view");
-						 
 						 try {
-								Blob imageBlob =  tableModel.result.getBlob(16);
-								InputStream inputStream = imageBlob.getBinaryStream(1, imageBlob.length());
-								imageSignature2 = ImageIO.read(inputStream);
+								Blob imageBlob =  null;	
+								
+								String source = "data//image" + ID +".jpg";
+								File image = new File(source);
+								if(image.exists()){
+									imageSignature2 = ImageIO.read(image);
+								}else{
+									String sql = "SELECT Signature2 FROM work_database WHERE ID=" + ID
+											+ ";";
+									Utilities query = new Utilities();
+									ResultSet result = null;
+									result = query.ExecuteSQLStatement(sql);
+									while(result.next()){
+										imageBlob = result.getBlob("Signature2");
+									}
+									/*if(imageBlob == null){
+										System.out.println("Blob is null");
+										}
+									*/
+									byte b[] = imageBlob.getBytes(1, (int)imageBlob.length());
+								
+									imageSignature2 = ImageIO.read(new ByteArrayInputStream(b));
+								
+									FileOutputStream fos=new FileOutputStream(new File(source));
+									fos.write(b);
+									fos.close();
+								}
+								
+								if(imageSignature2 == null){
+									System.out.println("Signature2 is null");
+								}
 								
 							} catch (SQLException | IOException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
+							
 						
 					 }
 					 if(list.get(20) != null){
@@ -943,8 +1027,10 @@ public class AccountForm1 extends JFrame {
 		textFieldRMTemailAddress.setText("");
 		textFieldName1.setText("");	
 		textFieldSignature1.setText("");
+		imageSignature1 = null;
 		textFieldName2.setText("");
 		textFieldSignature2.setText("");
+		imageSignature2 = null;
 		textFieldTreatedBy1.setText("");
 		textFieldTreatedBy2.setText("");
 		textFieldSignatureVerification.setText("");
