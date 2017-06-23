@@ -4,9 +4,9 @@ import java.sql.*;
 import java.util.Properties;
 
 public class JDBC {
-	protected static final String URL = "jdbc:mysql://localhost/gregs_list"; 
-	protected static final String USER = "root";
-	protected static final String PASSWORD = "daRemix06";
+	protected final String URL = "jdbc:mysql://localhost/gregs_list"; 
+	protected final String USER = "root";
+	protected final String PASSWORD = "daRemix06";
 	
 	Connection getConnection(){
 		Connection con = null;

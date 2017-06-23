@@ -11,12 +11,9 @@ public class Utilities {
 	Statement statement = null;
 	ResultSet resultset = null;
 	
-	public Utilities() throws SQLException{
-		try{
-		connection = DriverManager.getConnection(JDBC.URL, JDBC.USER, JDBC.PASSWORD);
-		}catch(SQLException e){
-			System.out.println("The following error has occured: " + e.getMessage());
-		}
+	public Utilities(){
+		connection = new JDBC().getConnection();
+		//		DriverManager.getConnection(JDBC.URL, JDBC.USER, JDBC.PASSWORD);
 	}
 	public Connection getConnection(){
 		return connection;
@@ -30,6 +27,13 @@ public class Utilities {
 			// TODO Auto-generated catch block
 			
 			e.printStackTrace();
+		}finally{
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return resultset;
 	}

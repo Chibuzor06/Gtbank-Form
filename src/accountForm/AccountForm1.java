@@ -96,6 +96,7 @@ public class AccountForm1 extends JFrame {
 				try {
 					AccountForm1 frame = new AccountForm1();
 					frame.setVisible(true);
+					//frame.pack();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -118,7 +119,7 @@ public class AccountForm1 extends JFrame {
 				}
 			}
 		});
-		
+		//pack();
 		JFrame AccountForm1 = this;
 		setTitle("GAPS-lite - Single User Registration Form");
 		connect = new JDBC();
@@ -288,6 +289,8 @@ public class AccountForm1 extends JFrame {
 		textFieldSignature1.setEditable(false);
 		
 		textFieldSignature2 = new JTextField();
+		textFieldSignature2.setBackground(Color.WHITE);
+		textFieldSignature2.setEditable(false);
 		textFieldSignature2.setColumns(10);
 		textFieldSignatureVerification = new JTextField();
 		textFieldTreatedBy1 = new JTextField();
@@ -756,7 +759,8 @@ public class AccountForm1 extends JFrame {
 		PreparedStatement prep = null;
 		FileInputStream fis1 = null, fis2 = null;
 		try {
-			prep = connect.getConnection().prepareStatement(s);
+			prep = new JDBC().getConnection().prepareStatement(s);
+			//		connect.getConnection().prepareStatement(s);
 			if(!(signatureFile1 == null)){
 				fis1 = new FileInputStream(signatureFile1);
 				prep.setBinaryStream(1, fis1, (int)signatureFile1.length());
@@ -1108,7 +1112,7 @@ public class AccountForm1 extends JFrame {
 			customDuty = 'Y';
 			chckbxCustomDuty.setSelected(false);
 		}
-		String name1, name2, signatureDate1 = null, signatureDate2 = null;
+		String name1, name2;
 		name1 = textFieldName1.getText();
 		name2 = textFieldName2.getText();
 		//signatureDate1 = textFieldSignatureDate1.getText();
@@ -1132,7 +1136,7 @@ public class AccountForm1 extends JFrame {
 		clearFields();     // clears all fields
 		
 		PreparedStatement p = null;
-	//	sql = "UPDATE work_database SET s"
+	
 		if(update){
 			//update = false;
 			sql = "UPDATE work_database SET Date = " + date;
