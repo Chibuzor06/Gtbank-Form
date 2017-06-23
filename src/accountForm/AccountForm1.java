@@ -750,8 +750,7 @@ public class AccountForm1 extends JFrame {
 	private void delete(int ID) {
 		// TODO Auto-generated method stub
 		String sql = "DELETE FROM work_database WHERE ID=" + ID +";";
-		//new Query(sql);
-		executeQuery(sql);
+		new Utilities().executeUpdate(sql);
 		
 	}
 
@@ -764,7 +763,7 @@ public class AccountForm1 extends JFrame {
 			if(!(signatureFile1 == null)){
 				fis1 = new FileInputStream(signatureFile1);
 				prep.setBinaryStream(1, fis1, (int)signatureFile1.length());
-				System.out.println("This happened");
+				//System.out.println("This happened");
 			}else{
 				prep.setNull(1, Types.BLOB);
 			}
@@ -876,11 +875,12 @@ public class AccountForm1 extends JFrame {
 						try {
 							Blob imageBlob =  null;	
 							
-							String source = "data//image" + ID +".jpg";
+							String source = "data//image" + ID +"-1.jpg";
 							File image = new File(source);
 							
 							if(image.exists()){
 								imageSignature1 = ImageIO.read(image);
+								signatureFile1 = new File(source);
 							}else{
 								String sql = "SELECT Signature1 FROM work_database WHERE ID=" + ID
 										+ ";";
@@ -897,8 +897,9 @@ public class AccountForm1 extends JFrame {
 							byte b[] = imageBlob.getBytes(1, (int)imageBlob.length());
 							
 							imageSignature1 = ImageIO.read(new ByteArrayInputStream(b));
+							signatureFile1 = new File(source);
 							
-				            FileOutputStream fos=new FileOutputStream(new File(source));
+				            FileOutputStream fos=new FileOutputStream(signatureFile1);
 				            fos.write(b);
 				            fos.close();
 							}
@@ -922,10 +923,11 @@ public class AccountForm1 extends JFrame {
 						 try {
 								Blob imageBlob =  null;	
 								
-								String source = "data//image" + ID +".jpg";
+								String source = "data//image" + ID +"-2.jpg";
 								File image = new File(source);
 								if(image.exists()){
 									imageSignature2 = ImageIO.read(image);
+									signatureFile2 = new File(source);
 								}else{
 									String sql = "SELECT Signature2 FROM work_database WHERE ID=" + ID
 											+ ";";
@@ -942,8 +944,9 @@ public class AccountForm1 extends JFrame {
 									byte b[] = imageBlob.getBytes(1, (int)imageBlob.length());
 								
 									imageSignature2 = ImageIO.read(new ByteArrayInputStream(b));
-								
-									FileOutputStream fos=new FileOutputStream(new File(source));
+									
+									signatureFile2 = new File(source);
+									FileOutputStream fos=new FileOutputStream(signatureFile2);
 									fos.write(b);
 									fos.close();
 								}

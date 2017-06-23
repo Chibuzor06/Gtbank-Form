@@ -13,6 +13,7 @@ public class Utilities {
 	
 	public Utilities(){
 		connection = new JDBC().getConnection();
+		System.out.println("Line 16, Utilities");
 		//		DriverManager.getConnection(JDBC.URL, JDBC.USER, JDBC.PASSWORD);
 	}
 	public Connection getConnection(){
@@ -21,20 +22,41 @@ public class Utilities {
 	}
 	public ResultSet ExecuteSQLStatement(String sql_stmt){
 		try {
+			if(connection == null){
+				connection = new JDBC().getConnection();
+				System.out.println("Line 26, Utilities");
+			}
 			statement = connection.createStatement();
 			resultset = statement.executeQuery(sql_stmt);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			
 			e.printStackTrace();
-		}finally{
-			try {
-				connection.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 		return resultset;
+	}
+	public int executeUpdate(String sql_stmt){
+		int returnValue = -1;
+		try {
+			if(connection == null) connection = new JDBC().getConnection();
+			statement = connection.createStatement();
+			returnValue = statement.executeUpdate(sql_stmt);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			if(connection != null){
+				
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return returnValue;
 	}
 }
