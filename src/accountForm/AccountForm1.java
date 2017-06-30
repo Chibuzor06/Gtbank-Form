@@ -1134,7 +1134,7 @@ public class AccountForm1 extends JFrame {
 			chckbxExisting.setSelected(false);
 		}		
 		String syntax = "', '";
-		String sql = null;;
+		String sql = null;
 		
 		clearFields();     // clears all fields
 		

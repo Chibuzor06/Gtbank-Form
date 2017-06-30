@@ -16,3 +16,7 @@ ADD PRIMARY KEY (ID);
 ALTER TABLE work_database
 CHANGE COLUMN Signature_Date1 Signature1 BLOB,
 CHANGE COLUMN Signature_Date2 Signature2 BLOB;
+
+ALTER TABLE `gregs_list`.`work_database` 
+CHANGE COLUMN `Signature1` `Signature1` LONGBLOB NULL DEFAULT NULL ,
+CHANGE COLUMN `Signature2` `Signature2` LONGBLOB NULL DEFAULT NULL ;

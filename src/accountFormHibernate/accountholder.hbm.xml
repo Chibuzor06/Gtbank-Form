@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping package ="accountFormHibernate">
+ 	<class name = "AccountHolder" table = "work_database">
+ 		<id name = "ID" type = "int" column = "ID">
+ 			<generator class = "native" />
+ 		</id>
+ 		<property name="date" column="Date" type="calendar_date"/>
+ 		<property name = "companyName" column = "Company_name" type= "string"/>
+ 		 <property name="officeTelephone" column="Office_telephone" type="string"/>
+ 		  <property name="webAddress" column="Web_Address" type="string"/>
+ 		   <property name="accountNumber" column="Account_Number" type="string"/>
+ 		    <property name="rmtEmailAddress" column="RMT_email" type="string"/>
+ 		     <property name="allAccounts" column="All_Accounts" type="char"/>
+ 		      <property name="selectAccounts" column="Select_Account" type="char"/>
+ 		       <property name="chequeConfirmation" column="Cheque_Confirmation" type="char"/>
+ 		        <property name="nibbs" column="NIBBS_Instant_Payment" type="char"/>
+ 		         <property name="standingInstructions" column="Standing_Instructions" type="char"/>
+ 		          <property name="customDuty" column="Custom_Duty" type="char"/>
+ 		           <property name="name1" column="Name1" type="string"/>
+ 		            <property name="signature1" column="Signature1" type="blob"/>
+ 		             <property name="name2" column="Name2" type="string"/>
+ 		              <property name="signature2" column="Signature2" type="blob"/>
+ 		               <property name="signatureVerification" column="Signature_Verification" type="string"/>
+ 		                <property name="New" column="New" type="char"/>
+ 		                 <property name="Existing" column="Existing" type="char"/>
+ 		                  <property name="treatedBy1" column="Treated_by1" type="string"/>
+ 		                   <property name="treatedBy2" column="Treated_by2" type="string"/> 	
+ 	
+ 	
+ 	</class> 
+ </hibernate-mapping>
