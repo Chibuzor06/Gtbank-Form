@@ -1,6 +1,7 @@
 package accountFormHibernate;
 
 import java.sql.Blob;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -191,10 +192,12 @@ public class AccountHolder {
 	public void setTreatedBy2(String number){
 		treatedBy2 = number;
 	}
+	private SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		String newString = ID + ", " + date + ", " + companyName + ", " + officeTelephone + ", " + webAddress
+		
+		String newString = ID + ", " + format1.format(date.getTime()) + ", " + companyName + ", " + officeTelephone + ", " + webAddress
 				+ ", \n" + accountNumber + ", " + rmtEmailAddress + ", " + allAccounts + ", " + selectAccounts
 				+ ", \n" + chequeConfirmation + ", \n" + nibbs + ", " + standingInstructions + ", " + customDuty
 				+ ", " + name1 + ", " + "blob, " + name2 + ", \n" + "blob, " + signatureVerification + ", " + New

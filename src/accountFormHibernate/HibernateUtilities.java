@@ -37,8 +37,8 @@ public class HibernateUtilities {
 		return tx;
 	}
 
-	
-	/*public static void main(String[] args){
+	/*
+	public static void main(String[] args){
 		HibernateUtilities util = new HibernateUtilities();
 		util.startNewSession();
 		util.getSession().close();

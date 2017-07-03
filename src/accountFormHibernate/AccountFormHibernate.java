@@ -10,6 +10,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,6 +49,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import org.hibernate.engine.jdbc.BlobProxy;
 import org.hibernate.query.Query;
 
 import accountForm.Utilities;
@@ -840,8 +842,9 @@ public class AccountFormHibernate extends JFrame {
 									String hql = "FROM AccountHolder WHERE ID=" + ID;
 									hibernate.startNewSession();
 									Query query =	hibernate.getSession().createQuery(hql);
-									hibernate.getSession().close();
+									
 									AccountHolder person = (AccountHolder) query.uniqueResult();
+									hibernate.getSession().close();
 									imageBlob = person.getSignature1();
 								/*if(imageBlob == null){
 									System.out.println("Blob is null");
@@ -882,11 +885,11 @@ public class AccountFormHibernate extends JFrame {
 										imageSignature2 = ImageIO.read(image);
 										signatureFile2 = new File(source);
 									}else{
-										String hql = " SELECT Signature2 FROM AccountHolder WHERE ID=" + ID;
+										String hql = " FROM AccountHolder WHERE ID=" + ID;
 										hibernate.startNewSession();
 										Query query =	hibernate.getSession().createQuery(hql);
-										hibernate.getSession().close();
 										AccountHolder person = (AccountHolder)query.uniqueResult();
+										hibernate.getSession().close();
 										imageBlob = person.getSignature2();
 										/*if(imageBlob == null){
 											System.out.println("Blob is null");
@@ -975,20 +978,29 @@ public class AccountFormHibernate extends JFrame {
 
 		private void uploadData() {
 			// TODO Auto-generated method stub
-			AccountHolder person =  initializeAccountHolder(new AccountHolder());
-			if(person == null){
+			AccountHolder person; 
+			/*if(person == null){
 				return;
-			}
+			}*/
 			if(hibernate != null){
 				hibernate.startNewSession();
 				hibernate.beginTransaction();
 				String message;
 				if(update){
 					update = false;
-					hibernate.getSession().update(person);
+					person = hibernate.getSession().get(AccountHolder.class, updateID);
+					AccountHolder person1 = initializeAccountHolder(person);
+					if(person1 == null){
+						hibernate.getTransaction().commit();
+						hibernate.getSession().close();
+						return;
+					}
+					person = person1;
+					//hibernate.getSession().update(person);
 					System.out.println(person);
 					message = "Database Updated";
 				}else{
+					person = initializeAccountHolder(new AccountHolder());
 					hibernate.getSession().save(person);
 					message = "New Data Added to Database.";
 					System.out.println(person);
@@ -1000,7 +1012,7 @@ public class AccountFormHibernate extends JFrame {
 			}else{
 				System.out.println("Hibernate is NULL");
 			}
-		
+		loadRecords();
 		
 			
 		}
@@ -1083,6 +1095,37 @@ public class AccountFormHibernate extends JFrame {
 			if(chckbxExisting.isSelected()){
 				person.setExisting('Y');
 			}
+			
+			if(imageSignature1 != null){
+				try {
+					ByteArrayOutputStream output = new ByteArrayOutputStream();
+					ImageIO.write(imageSignature1, "jpg", output);
+					output.flush();
+					byte[] imageInByte = output.toByteArray();
+					person.setSignature1(BlobProxy.generateProxy(imageInByte));
+					output.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+					
+			}
+			if(imageSignature2 != null){
+				try {
+					ByteArrayOutputStream output = new ByteArrayOutputStream();
+					ImageIO.write(imageSignature2, "jpg", output);
+					output.flush();
+					byte[] imageInByte = output.toByteArray();
+					person.setSignature2(BlobProxy.generateProxy(imageInByte));
+					output.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+					
+			}
+			
+			
 			
 			return person;
 		}
