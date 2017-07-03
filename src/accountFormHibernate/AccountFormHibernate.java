@@ -9,8 +9,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Blob;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -34,10 +42,17 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
+import org.hibernate.query.Query;
+
+import accountForm.Utilities;
 
 public class AccountFormHibernate extends JFrame {
-	
 	
 		private JPanel contentPane, panel;
 		private JCheckBox chckbxAllAccounts;
@@ -109,7 +124,7 @@ public class AccountFormHibernate extends JFrame {
 		 * Create the frame.
 		 */
 		public AccountFormHibernate() {
-			/*addWindowListener(new WindowAdapter() {
+			addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowOpened(WindowEvent e) {
 					try {
@@ -119,9 +134,8 @@ public class AccountFormHibernate extends JFrame {
 						e1.printStackTrace();
 					}
 				}
-			});*/
+			});
 			//pack();
-			//JFrame AccountFormHibernate = this;
 			hibernate = new HibernateUtilities();
 			setTitle("GAPS-lite - Single User Registration Form");
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -638,7 +652,7 @@ public class AccountFormHibernate extends JFrame {
 			JButton btnAddNew = new JButton("ADD NEW");
 			btnAddNew.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					//clearFields();
+					clearFields();
 					JOptionPane.showMessageDialog(panel_1, "Switching to New tab..." , "Information Message",
 							JOptionPane.INFORMATION_MESSAGE);
 					tabbedPane.setSelectedIndex(0);
@@ -678,9 +692,9 @@ public class AccountFormHibernate extends JFrame {
 						//delete();
 						//delete = true;
 						try {
-							//delete((Integer)table.getValueAt(table.getSelectedRow(), 0));
+							delete((Integer)table.getValueAt(table.getSelectedRow(), 0));
 							
-							//loadRecords();
+							loadRecords();
 						} catch (Exception e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -695,7 +709,8 @@ public class AccountFormHibernate extends JFrame {
 			btnRefresh.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						//loadRecords();
+						System.out.println("Refresh");
+						loadRecords();
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -747,6 +762,216 @@ public class AccountFormHibernate extends JFrame {
 			
 			
 	}
+		protected void delete(Integer valueAt) {
+			// TODO Auto-generated method stub
+			hibernate.startNewSession();
+			hibernate.beginTransaction();
+			AccountHolder dyingPerson = hibernate.getSession().get(AccountHolder.class, valueAt);
+			System.out.println(dyingPerson);
+			hibernate.getSession().delete(dyingPerson);
+			hibernate.getTransaction().commit();
+			hibernate.getSession().close();
+			
+		}
+		protected String[] columnNames = {"ID", "Date", "Company Name", "Office Telephone", "Web Address", "Account Number",
+				"RMT Email Address", "All Accounts", "Select Accounts", "ChequeConfirmation", "NIBBS", "Standing Instructions"
+				, "Custom Duty", "Name1", "Signature1", "Name2", "Signature2", "Signature Verification", "New", "Existing",
+				"Treated By1", "Treated By2"};
+		
+		private void loadRecords(){
+			String hql1 = " from AccountHolder";
+			MyTableModel tableModel = new MyTableModel(columnNames, hql1);
+			table.setModel(tableModel);
+			table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+				@Override
+				public void valueChanged(ListSelectionEvent e){
+					clearFields();
+					if(table.getSelectedRow() >= 0){
+						ArrayList<Object> list = new ArrayList<Object>();
+						for(int i = 0; i < 22; i++){
+							Object obj = table.getValueAt(table.getSelectedRow(), i);
+							list.add(obj);
+						}
+						
+						int	ID = Integer.parseInt(list.get(0).toString());
+						String date = list.get(1).toString();
+						 String data[] = date.split("-");
+						 if(data.length != 3){
+							 	//System.out.println("Error in date formatting, I think");
+						 }else{
+							textFieldYear.setText(data[0]);
+						 	textFieldMonth.setText(data[1]);
+						 	textFieldDay.setText(data[2]);
+						 }				 
+						 if(list.get(2) != null){
+							 textFieldCompanyName.setText(list.get(2).toString());
+						 }
+						// System.out.println(textFieldCompanyName.getText());
+						 if(list.get(4) != null){
+							 textFieldWebAddress.setText(list.get(4).toString());
+						 //System.out.println(textFieldWebAddress.getText());
+						 }
+						 if(list.get(3) != null){
+							 textFieldOfficeTelephone.setText(list.get(3).toString());
+						 //System.out.println(textFieldOfficeTelephone.getText());
+						 }
+						 if(list.get(5) != null){
+							 textFieldAccountNumber.setText(list.get(5).toString());
+						 //System.out.println(textFieldWebAddress.getText());
+						 }
+						 if(list.get(6) != null){
+							 textFieldRMTemailAddress.setText(list.get(6).toString());
+						 }
+						 if(list.get(13) != null){
+							 textFieldName1.setText(list.get(13).toString());
+						 }
+						 if(list.get(14) != null){
+							 textFieldSignature1.setText("Click below to view");
+							try {
+								Blob imageBlob =  null;	
+								
+								String source = "data//image" + ID +"-1.jpg";
+								File image = new File(source);
+								
+								if(image.exists()){
+									imageSignature1 = ImageIO.read(image);
+									signatureFile1 = new File(source);
+								}else{
+									String hql = "FROM AccountHolder WHERE ID=" + ID;
+									hibernate.startNewSession();
+									Query query =	hibernate.getSession().createQuery(hql);
+									hibernate.getSession().close();
+									AccountHolder person = (AccountHolder) query.uniqueResult();
+									imageBlob = person.getSignature1();
+								/*if(imageBlob == null){
+									System.out.println("Blob is null");
+								}
+								*/
+								byte b[] = imageBlob.getBytes(1, (int)imageBlob.length());
+								
+								imageSignature1 = ImageIO.read(new ByteArrayInputStream(b));
+								signatureFile1 = new File(source);
+								
+					            FileOutputStream fos=new FileOutputStream(signatureFile1);
+					            fos.write(b);
+					            fos.close();
+								}
+								
+								if(imageSignature1 == null){
+									System.out.println("Signature1 is null");
+								}
+								
+							} catch (SQLException | IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							
+						 }
+						 if(list.get(15) != null){
+							 textFieldName2.setText(list.get(15).toString());
+						 }
+						 if(list.get(16) != null){
+							 //textFieldSignature2.setText(list.get(16).toString());
+							 textFieldSignature2.setText("Click below to view");
+							 try {
+									Blob imageBlob =  null;	
+									
+									String source = "data//image" + ID +"-2.jpg";
+									File image = new File(source);
+									if(image.exists()){
+										imageSignature2 = ImageIO.read(image);
+										signatureFile2 = new File(source);
+									}else{
+										String hql = " SELECT Signature2 FROM AccountHolder WHERE ID=" + ID;
+										hibernate.startNewSession();
+										Query query =	hibernate.getSession().createQuery(hql);
+										hibernate.getSession().close();
+										AccountHolder person = (AccountHolder)query.uniqueResult();
+										imageBlob = person.getSignature2();
+										/*if(imageBlob == null){
+											System.out.println("Blob is null");
+											}
+										*/
+										byte b[] = imageBlob.getBytes(1, (int)imageBlob.length());
+									
+										imageSignature2 = ImageIO.read(new ByteArrayInputStream(b));
+										
+										signatureFile2 = new File(source);
+										FileOutputStream fos=new FileOutputStream(signatureFile2);
+										fos.write(b);
+										fos.close();
+									}
+									
+									if(imageSignature2 == null){
+										System.out.println("Signature2 is null");
+									}
+									
+								} catch (SQLException | IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								
+							
+						 }
+						 if(list.get(20) != null){
+							 textFieldTreatedBy1.setText(list.get(20).toString());
+						 }
+						 if(list.get(21) != null){
+							 textFieldTreatedBy2.setText(list.get(21).toString());
+						 }
+						 if(list.get(17) != null){
+							 textFieldSignatureVerification.setText(list.get(17).toString());
+						 }
+						 if(list.get(7) != null){
+							 if(list.get(7).toString().equals("Y")){
+							 	chckbxAllAccounts.setSelected(true); 
+						 	}
+						 }
+						 if(list.get(8) != null){
+							 if(list.get(8).toString().equals("Y")){
+							 	chckbxSelectAccount.setSelected(true); 
+						 	}
+						 }
+						 if(list.get(9) != null){
+							 if(list.get(9).toString().equals("Y")){
+							 	chckbxChequeConfirmation.setSelected(true); 
+						 	}
+						 }
+						 if(list.get(10) != null){
+							 if(list.get(10).toString().equals("Y")){
+							 	chckbxNIBBS.setSelected(true); 
+						 	}
+						 }
+						 if(list.get(19) != null){
+							 if(list.get(19).toString().equals("Y")){
+								 chckbxExisting.setSelected(true); 
+						 	}
+						 }
+						 if(list.get(18) != null){
+							 if(list.get(18).toString().equals("Y")){
+						 
+								 chckbxNew.setSelected(true); 
+							 }
+						 }
+						 if(list.get(12) != null){	
+							 if(list.get(12).toString().equals("Y")){
+							 	chckbxCustomDuty.setSelected(true); 
+						 	}
+						 }
+						 if(list.get(11) != null){
+							 if(list.get(11).toString().equals("Y")){
+								 chckbxStandingInstructions.setSelected(true); 
+							 }
+						 }
+						 
+					}
+				}
+			});
+			DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+	        rightRenderer.setHorizontalAlignment(SwingConstants.LEFT);
+	        table.getColumnModel().getColumn(0).setCellRenderer(rightRenderer);
+			
+		}
 
 		private void uploadData() {
 			// TODO Auto-generated method stub
@@ -757,9 +982,21 @@ public class AccountFormHibernate extends JFrame {
 			if(hibernate != null){
 				hibernate.startNewSession();
 				hibernate.beginTransaction();
-				hibernate.getSession().save(person);
+				String message;
+				if(update){
+					update = false;
+					hibernate.getSession().update(person);
+					System.out.println(person);
+					message = "Database Updated";
+				}else{
+					hibernate.getSession().save(person);
+					message = "New Data Added to Database.";
+					System.out.println(person);
+				}
+				JOptionPane.showMessageDialog(panel, message);
 				hibernate.getTransaction().commit();
 				hibernate.getSession().close();
+				clearFields();
 			}else{
 				System.out.println("Hibernate is NULL");
 			}
@@ -767,7 +1004,34 @@ public class AccountFormHibernate extends JFrame {
 		
 			
 		}
-		
+		private	void clearFields(){	
+			textFieldYear.setText("");
+			textFieldMonth.setText("");
+			textFieldCompanyName.setText("");
+			textFieldDay.setText("");
+			textFieldWebAddress.setText("");
+			textFieldOfficeTelephone.setText("");
+			textFieldAccountNumber.setText("");
+			textFieldRMTemailAddress.setText("");
+			textFieldName1.setText("");	
+			textFieldSignature1.setText("");
+			imageSignature1 = null;
+			textFieldName2.setText("");
+			textFieldSignature2.setText("");
+			imageSignature2 = null;
+			textFieldTreatedBy1.setText("");
+			textFieldTreatedBy2.setText("");
+			textFieldSignatureVerification.setText("");
+			chckbxAllAccounts.setSelected(false);
+			chckbxChequeConfirmation.setSelected(false);
+			chckbxCustomDuty.setSelected(false);
+			chckbxExisting.setSelected(false);
+			chckbxNew.setSelected(false);
+			chckbxNIBBS.setSelected(false);
+			chckbxSelectAccount.setSelected(false);
+			chckbxStandingInstructions.setSelected(false);
+			
+		}
 		private AccountHolder initializeAccountHolder(AccountHolder person){
 			if(textFieldDay.getText().equals("") || textFieldMonth.getText().equals("") || textFieldYear.getText().equals("")){
 				person.setDate(null);
@@ -817,7 +1081,7 @@ public class AccountFormHibernate extends JFrame {
 				person.setNew('Y');
 			}
 			if(chckbxExisting.isSelected()){
-				person.setExisting('N');
+				person.setExisting('Y');
 			}
 			
 			return person;

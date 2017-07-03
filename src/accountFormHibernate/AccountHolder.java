@@ -31,7 +31,6 @@ public class AccountHolder {
 	
 	public AccountHolder(){
 		date = null;
-		//date = Calendar.getInstance();
 		companyName = null;
 		officeTelephone = null;
 		webAddress = null;
@@ -192,8 +191,15 @@ public class AccountHolder {
 	public void setTreatedBy2(String number){
 		treatedBy2 = number;
 	}
-	
-	
-	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		String newString = ID + ", " + date + ", " + companyName + ", " + officeTelephone + ", " + webAddress
+				+ ", \n" + accountNumber + ", " + rmtEmailAddress + ", " + allAccounts + ", " + selectAccounts
+				+ ", \n" + chequeConfirmation + ", \n" + nibbs + ", " + standingInstructions + ", " + customDuty
+				+ ", " + name1 + ", " + "blob, " + name2 + ", \n" + "blob, " + signatureVerification + ", " + New
+				+ ", " + Existing + ", " + treatedBy1 + ", " + treatedBy2;
+		return newString;
+	}
 	
 }

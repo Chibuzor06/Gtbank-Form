@@ -744,7 +744,7 @@ public class AccountForm1 extends JFrame {
 		panel_1.setLayout(gl_panel_1);
 		
 		
-	
+	System.out.println("When does this run?");
 	}
 	
 	private void delete(int ID) {

@@ -24,7 +24,7 @@ public class HibernateUtilities {
 		session = sessionFactory.openSession();
 	}
 	public Session getSession(){
-		if(session != null){
+		if(session == null){
 			startNewSession();
 		}
 		return session;
@@ -36,6 +36,8 @@ public class HibernateUtilities {
 		//return session.getTransaction();
 		return tx;
 	}
+
+	
 	/*public static void main(String[] args){
 		HibernateUtilities util = new HibernateUtilities();
 		util.startNewSession();
