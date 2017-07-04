@@ -723,7 +723,22 @@ public class AccountFormHibernate extends JFrame {
 			
 		//	fc.showOpenDialog(panel);
 			
+			JButton btnPrintAll = new JButton("PRINT ALL");
+			btnPrintAll.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					new DisplayReports().showRecord();
+				}
+			});
 			
+			JButton btnGeneratePDF = new JButton("GENERATE PDF");
+			btnGeneratePDF.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					DisplayReports display = new DisplayReports();
+					display.saveRecord();
+					String s = "File saved: " + display.documentName;
+					JOptionPane.showMessageDialog(panel_1, s);
+				}
+			});
 			//scrollPane_1.setViewportView(table);
 			
 			gl_panel_1.setHorizontalGroup(
@@ -742,7 +757,11 @@ public class AccountFormHibernate extends JFrame {
 								.addComponent(btnDelete)
 								.addGap(18)
 								.addComponent(btnRefresh)
-								.addPreferredGap(ComponentPlacement.RELATED)
+								.addGap(18)
+								.addComponent(btnPrintAll)
+								.addGap(18)
+								.addComponent(btnGeneratePDF)
+								//.addPreferredGap(ComponentPlacement.RELATED)
 								))
 						.addContainerGap(32, Short.MAX_VALUE))
 			);
@@ -757,6 +776,8 @@ public class AccountFormHibernate extends JFrame {
 							.addComponent(btnUpdate)
 							.addComponent(btnDelete)
 							.addComponent(btnRefresh)
+							.addComponent(btnPrintAll)
+							.addComponent(btnGeneratePDF)
 							)
 						.addContainerGap(300, Short.MAX_VALUE))
 			);

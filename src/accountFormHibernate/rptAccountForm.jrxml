@@ -46,7 +46,7 @@
 		<band height="56" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="66" splitType="Stretch">
+		<band height="71" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="20" width="19" height="25" uuid="e7041da3-55da-4a18-9eaa-c0282e55bae8"/>
 				<text><![CDATA[ID]]></text>
@@ -149,10 +149,13 @@
 				</reportElement>
 				<text><![CDATA[Treated By 2]]></text>
 			</staticText>
+			<rectangle>
+				<reportElement x="0" y="65" width="800" height="1" uuid="c1498abf-47db-4cb7-97b4-d8dc4518c23a"/>
+			</rectangle>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="50" splitType="Stretch">
+		<band height="51" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="11" width="19" height="30" uuid="705821d4-ad5c-46a3-b9f9-bb4a8690453e"/>
 				<textElement>
@@ -293,15 +296,56 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{Treated_by2}]]></textFieldExpression>
 			</textField>
+			<rectangle>
+				<reportElement x="1" y="50" width="800" height="1" uuid="050986f7-e1ec-40d0-b1e0-241ce1eb1b2b"/>
+			</rectangle>
 		</band>
 	</detail>
 	<columnFooter>
 		<band height="45" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band height="66" splitType="Stretch">
+			<textField>
+				<reportElement x="743" y="1" width="22" height="20" uuid="0c96f022-f8b1-4a7c-a62e-6bbddc55ba69"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="716" y="1" width="27" height="20" uuid="8b824ebf-38d0-4f6c-bba0-ce306502c93c">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Bottom"/>
+				<text><![CDATA[Page]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="769" y="1" width="9" height="20" uuid="d958674a-1ada-4b2f-b817-a61b6a422336">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Bottom"/>
+				<text><![CDATA[of]]></text>
+			</staticText>
+			<textField evaluationTime="Master">
+				<reportElement x="778" y="1" width="24" height="20" uuid="12132b90-2f3b-4eb7-adef-883646c9d664"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
+				<textFieldExpression><![CDATA[$V{MASTER_TOTAL_PAGES}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
 	<summary>
-		<band height="42" splitType="Stretch"/>
+		<band height="44" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="68" height="20" uuid="d945576d-bb7b-4152-8940-ac51fa1fa8d3">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<text><![CDATA[Total Records:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="68" y="0" width="32" height="20" uuid="29cfe60d-62bc-46f6-ab53-ad15b951a437"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
 	</summary>
 </jasperReport>
