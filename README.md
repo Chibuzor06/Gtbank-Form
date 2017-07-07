@@ -5,11 +5,11 @@ Report functionality added in src/accountFormHibernate package.
 
 <h3>External Libraries used:</h3>
 -JasperSoft Studios iReport
-  Download at the JasperSoft Studios site
+  Download at the <a href="http://community.jaspersoft.com/download">JasperSoft Studios site</a>
 -Hibernate ORM 
-  Download at the <a href="http://hibernate.org/orm/downloads/">hibernate</a> site 
+  Download at the <a href="http://hibernate.org/orm/downloads/">Hibernate site</a> 
 -MySql jdbc connector J
-  Download at Oracle MySql site
+  Download at <a href="https://dev.mysql.com/downloads/installer/">Oracle MySql site</a>
 
 For Eclipse IDE Users
 -JasperSoft studios can be downloaded from eclipse market place.
