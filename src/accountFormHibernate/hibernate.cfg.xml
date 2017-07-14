@@ -9,10 +9,10 @@
 			jdbc:mysql://localhost/gregs_list
 		</property>
 		<property name = "connection.username">
-			root
+			<!--input database username here. Most probably root -->
 		</property>
 		<property name = "connection.password">
-			daRemix06
+			<!--input database password here -->
 		</property>
 		<property name = "dialect">org.hibernate.dialect.MySQL57Dialect</property>
 		<property name = "hbm2ddl.auto">validate</property> 
