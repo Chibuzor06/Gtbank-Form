@@ -20,6 +20,6 @@ work2/AccountForm is the current working form
 
 Modify username, password and database name in JDBC classes in accountForm
 and accountFormHibernate(last text in URL variable)
-
+Also modify username, password and database name im accountFormHibernate/hibernate.cfg.xml as appropriate.
 
 
