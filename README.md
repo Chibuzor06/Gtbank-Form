@@ -24,4 +24,5 @@ Modify username, password and database name in JDBC classes in accountForm
 and accountFormHibernate(last text in URL variable)
 Also modify username, password and database name im accountFormHibernate/hibernate.cfg.xml as appropriate.
 
-
+<h1>Todo:</h1> 
+-Create apache ant build.xml file or maven to handle dependency management
