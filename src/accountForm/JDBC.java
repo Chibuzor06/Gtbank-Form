@@ -5,8 +5,8 @@ import java.util.Properties;
 
 public class JDBC {
 	protected static final String URL = "jdbc:mysql://localhost/gregs_list"; 
-	protected static final String USER = "root";
-	protected static final String PASSWORD = "daRemix06";
+	protected static final String USER = "< enter username here >";
+	protected static final String PASSWORD = "< enter password here >";
 	
 	Connection getConnection(){
 		Connection con = null;
